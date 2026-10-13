@@ -84,3 +84,21 @@ void Book::fromFileFormat(const string &line) {
 
   getline(ss, borrowerId, '|');
 }
+
+void Book::fromCSV(const string &line) {
+  stringstream ss(line);
+
+  getline(ss, title, ',');
+  getline(ss, author, ',');
+  getline(ss, isbn, ',');
+
+  string available;
+  getline(ss, available, ',');
+
+  isAvailable = true;
+  if (available == "0") {
+    isAvailable = false;
+  }
+
+  getline(ss, borrowerId, '|');
+}

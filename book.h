@@ -38,6 +38,7 @@ public:
     string toString() const;
     string toFileFormat() const;
     void fromFileFormat(const string& line);
+    void fromCSV(const string& line);
 };
 
 #endif

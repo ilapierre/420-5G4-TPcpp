@@ -29,6 +29,10 @@ public:
     // Utility methods
     bool fileExists(const string& filename);
     void createBackup();
+
+    // Import/Export
+    bool importBooksCSV(Library& library, string csvPath);
+    bool exportCSV(Library& library);
 };
 
 #endif

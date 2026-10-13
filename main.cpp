@@ -2,6 +2,7 @@
 #include <iostream>
 #include <limits>
 #include <string>
+#include <vector>
 
 #include "filemanager.h"
 #include "library.h"
@@ -34,6 +35,8 @@ void displayMenu() {
     cout << "11. Statistiques de la Bibliothèque\n";
     cout << "12. Sauvegarder les Données\n";
     cout << "13. Créer une Sauvegarde\n";
+    cout << "14. Importer une bibliothèque (CSV)\n";
+    cout << "15. Exporter la bibliothèque (CSV)\n";
     cout << "0.  Quitter\n";
     cout << "======================================================\n";
     cout << "Entrez votre choix : ";
@@ -275,6 +278,45 @@ int main(int argc, char* argv[]) {
                 fileManager.createBackup();
                 pauseForInput();
                 break;
+            }
+            
+            case 14: { // Import CSV
+              cout << "Veuillez préciser le type d'opération:\n";
+              cout << "1. Importer un CSV de livres\n";
+              cout << "2. Importer un CSV d'utilisateurs\n";
+
+              string choix = getInput("Choix: ");
+
+              if (choix != "1" && choix != "2") {
+                cout << "Choix invalide. Veuillez réessayer.\n";
+                pauseForInput();
+                break;
+              }
+
+              string csvPath =
+                  getInput("Entrer le chemin vers le fichier CSV : ");
+
+              if (csvPath.empty()) {
+                cout << "Erreur : Le chemin vers le fichier est requis.\n";
+                pauseForInput();
+                break;
+              }
+
+              // Warn about potentially non-CSV file
+              if (csvPath.size() < 4 || csvPath.substr(csvPath.size() - 4) != ".csv") {
+                cout << "Attention : Extension .csv non-detectée.\n";
+              }
+
+              if (choix == "1") fileManager.importBooksCSV(library, csvPath);
+              if (choix == "2") /*fileManager.importUsersCSV(library, csvPath)*/;
+
+              pauseForInput();
+              break;
+            }
+
+            case 15: { // Export CSV
+              // TODO: Implement
+              break;
             }
             
             case 0: // Exit

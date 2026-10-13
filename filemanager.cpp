@@ -2,6 +2,7 @@
 #include <iostream>
 #include <filesystem>
 #include "filemanager.h"
+#include "utils.h"
 
 using namespace std;
 
@@ -121,3 +122,32 @@ void FileManager::createBackup() {
     
     cout << "Fichiers de sauvegarde créés.\n";
 }
+
+// Import Books by CSV
+bool FileManager::importBooksCSV(Library &library, string csvPath) {
+  ifstream file(csvPath);
+
+  if (!file.is_open()) {
+    cout << "Erreur : Impossible d'ouvrir le fichier de livres (" + csvPath + ").\n";
+    return false;
+  }
+
+  string line;
+  int count = 0;
+  while (getline(file, line)) {
+    if (trim(line).empty())
+      continue;
+
+    Book book;
+    book.fromCSV(line);
+    library.addBook(book);
+    count++;
+  }
+
+  file.close();
+  cout << "Chargé " << count << " livre(s) depuis le fichier.\n";
+  return true;
+}
+
+// Export CSV
+bool FileManager::exportCSV(Library &library) { return true; }
