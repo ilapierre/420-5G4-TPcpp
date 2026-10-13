@@ -1,10 +1,11 @@
+#include <filesystem>
 #include <iostream>
 #include <limits>
 #include <string>
-#include <filesystem>
 
-#include "library.h"
 #include "filemanager.h"
+#include "library.h"
+#include "utils.h"
 
 using namespace std;
 
@@ -104,17 +105,45 @@ int main(int argc, char* argv[]) {
         
         switch (choice) {
             case 1: { // Add Book
-                string title = getInput("Entrez le titre du livre : ");
-                string author = getInput("Entrez l'auteur du livre : ");
-                string isbn = getInput("Entrez l'ISBN du livre : ");
-                
-                if (library.findBookByISBN(isbn)) {
-                    cout << "Erreur : Un livre avec l'ISBN " << isbn << " existe déjà.\n";
-                } else {
-                    Book newBook(title, author, isbn);
-                    library.addBook(newBook);
-                    cout << "Livre ajouté avec succès !\n";
+                string title = trim(getInput("Entrez le titre du livre : "));
+                string author = trim(getInput("Entrez l'auteur du livre : "));
+                string isbn = trim(getInput("Entrez l'ISBN du livre : "));
+
+                // Check for empty fields
+                if (title.empty() || author.empty() || isbn.empty()) {
+                  cout << "Erreur : Tous les champs sont requis. Veuillez réessayer.\n";
+                  pauseForInput();
+                  break;
                 }
+               
+                // Check unique ISBN
+                if (library.findBookByISBN(isbn)) {
+                  cout << "Erreur : Un livre avec l'ISBN " << isbn << " existe déjà.\n";
+                  pauseForInput();
+                  break;
+                }
+
+                // Check unique title + author
+                bool match = false;
+                for (Book *b : library.searchBooksByTitle(title)) {
+                  if (b->getAuthor() == author) {
+                    match = true;
+                    break;
+                  }
+                }
+
+                if (match) {
+                  cout << "Erreur : Un livre de titre ("
+                       << title
+                       << ") de l'auteur (" + author + ") existe déjà.\n";
+                  pauseForInput();
+                  break;
+                }
+
+                Book newBook(title, author, isbn);
+                library.addBook(newBook);
+                cout << "Livre ajouté avec succès !\n";
+
                 pauseForInput();
                 break;
             }
