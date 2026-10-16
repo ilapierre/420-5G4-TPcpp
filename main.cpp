@@ -186,16 +186,20 @@ int main(int argc, char* argv[]) {
                 break;
             
             case 7: { // Add User
-                string name = getInput("Entrez le nom de l'utilisateur : ");
-                string userId = getInput("Entrez l'ID de l'utilisateur : ");
-                
-                if (library.findUserById(userId)) {
-                    cout << "Erreur : Un utilisateur avec l'ID " << userId << " existe déjà.\n";
-                } else {
-                    User newUser(name, userId);
-                    library.addUser(newUser);
-                    cout << "Utilisateur ajouté avec succès !\n";
-                }
+                string name = trim(getInput("Entrez le nom de l'utilisateur : "));
+                string userId = trim(getInput("Entrez l'ID de l'utilisateur : "));
+
+                User newUser(name, userId);
+
+                if (!fileManager.verifyUserConflict(library, newUser)) {
+                  pauseForInput();
+                  cout << "L'utilisateur n'a pas pu être ajouté, veuillez réessayer. !\n";
+                  break;
+                };
+
+                library.addUser(newUser);
+                cout << "Utilisateur ajouté avec succès !\n";
+
                 pauseForInput();
                 break;
             }
@@ -287,7 +291,10 @@ int main(int argc, char* argv[]) {
                 fileManager.importBooksCSV(library, csvPath);
                 fileManager.saveLibraryData(library);
               }
-              if (choix == "2") /*fileManager.importUsersCSV(library, csvPath)*/;
+              if (choix == "2") {
+                fileManager.importUsersCSV(library, csvPath);
+                fileManager.saveLibraryData(library);
+              }
 
               pauseForInput();
               break;

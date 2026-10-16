@@ -173,6 +173,56 @@ bool FileManager::importBooksCSV(Library &library, string csvPath) {
   return true;
 }
 
+// Import Users by CSV
+bool FileManager::importUsersCSV(Library &library, string csvPath) {
+  ifstream file(csvPath);
+
+  if (!file.is_open()) {
+    cout << "Erreur : Impossible d'ouvrir le fichier d'utilisateurs (" + csvPath + ").\n";
+    return false;
+  }
+
+  string line;
+  int count = 0;
+  int lineNumber = 0;
+
+  // Validate every user
+  while (getline(file, line)) {
+    lineNumber++;
+
+    if (lineNumber == 1) {
+      // Skip the header of CSVs
+      continue;
+    }
+
+    if (trim(line).empty())
+      continue;
+
+    User user;
+    user.fromCSV(line);
+
+    if (!verifyUserConflict(library, user)) {
+      cout << csvPath << ":" << "Ligne " << lineNumber << endl;
+      cout << "Import interrompu : " << count << " utilisateur(s) chargé(s) avant l'erreur." << endl;
+      return false;
+    }
+
+    library.addUser(user);
+
+    // Borrow books if imported user had borrowed books
+    for (const string &isbn : user.getBorrowedBooks()) {
+      Book *book = library.findBookByISBN(isbn);
+      book->checkOut(user.getUserId());
+    }
+
+    count++;
+  }
+
+  file.close();
+  cout << "Chargé " << count << " utilisateur(s) depuis le fichier.\n";
+  return true;
+}
+
 // Export CSV
 bool FileManager::exportCSV(Library &library) { return true; }
 
@@ -219,6 +269,41 @@ bool FileManager::verifyBookConflict(Library &library, Book& book) {
   if (borrowerId != "" && library.findUserById(borrowerId) == NULL) {
     cout << "\nErreur: L'utilisateur " << borrowerId << " n'existe pas" << endl;
     return false;
+  }
+
+  return true;
+}
+
+bool FileManager::verifyUserConflict(Library &library, User &user) {
+  string name = user.getName();
+  string userId = user.getUserId();
+  vector<string> borrowedBooks = user.getBorrowedBooks();
+
+  // Check for empty fields
+  if (name.empty() || userId.empty()) {
+    cout << "\nErreur : Tous les champs sont requis. Veuillez réessayer." << endl;
+    return false;
+  }
+
+  // Check unique user ID
+  if (library.findUserById(userId)) {
+    cout << "\nErreur : Un utilisateur avec l'ID " << userId << " existe déjà. " << endl;
+    return false;
+  }
+
+  for (const string &isbn : borrowedBooks) {
+    // Check for existing books
+    Book *book = library.findBookByISBN(isbn);
+    if (book == NULL) {
+      cout << "\nErreur: Le livre avec l'ISBN " << isbn << " n'existe pas" << endl;
+      return false;
+    }
+
+    // Check for borrowed book + Availablity mismatch
+    if (!book->getAvailability()) {
+      cout << "\nErreur: Le livre '" << book->getTitle() << "' est déjà emprunté" << endl;
+      return false;
+    }
   }
 
   return true;
