@@ -301,7 +301,18 @@ int main(int argc, char* argv[]) {
             }
 
             case 15: { // Export CSV
-              // TODO: Implement
+              string csvDir =
+                  getInput("Entrer le chemin vers le dossier de destination : ");
+
+              if (csvDir.empty()) {
+                cout << "Erreur : Le chemin vers le dossier est requis.\n";
+                pauseForInput();
+                break;
+              }
+
+              fileManager.saveBooksToCSV(library, csvDir);
+              // fileManager.saveUsersToCSV(library, csvDir);
+              pauseForInput();
               break;
             }
             

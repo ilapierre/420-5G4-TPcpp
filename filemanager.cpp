@@ -1,4 +1,5 @@
 #include <fstream>
+#include <ctime>
 #include <iostream>
 #include <filesystem>
 #include "filemanager.h"
@@ -33,6 +34,39 @@ bool FileManager::saveBooksToFile(Library& library) {
     auto books = library.getAllBooks();
     for (Book* book : books) {
         file << book->toFileFormat() << "\n";
+    }
+    
+    file.close();
+    return true;
+}
+
+bool FileManager::saveBooksToCSV(Library& library, string csvDir) {
+  // NOTE: Source pour la solution du timestamp:
+  // https://www.w3schools.com/cpp/ref_ctime_strftime.asp
+
+    time_t timestamp;
+    char output[50];
+    struct tm * datetime;
+
+    time(&timestamp);
+    datetime = localtime(&timestamp);
+
+    strftime(output, 50, "%m_%d_%y", datetime);
+
+    string filename = csvDir + "/books_" + output + ".csv";
+
+    ofstream file(filename);
+    if (!file.is_open()) {
+      cout << "Erreur : Impossible d'ouvrir " << filename << " en écriture.\n";
+      return false;
+    }
+
+    // Header
+    file << "title," << "author," << "isbn," << "isAvailable," << "borrowerId,\n";
+
+    auto books = library.getAllBooks();
+    for (Book* book : books) {
+        file << book->toCSV() << "\n";
     }
     
     file.close();
@@ -222,9 +256,6 @@ bool FileManager::importUsersCSV(Library &library, string csvPath) {
   cout << "Chargé " << count << " utilisateur(s) depuis le fichier.\n";
   return true;
 }
-
-// Export CSV
-bool FileManager::exportCSV(Library &library) { return true; }
 
 bool FileManager::verifyBookConflict(Library &library, Book& book) {
   string title = book.getTitle();

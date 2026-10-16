@@ -67,6 +67,15 @@ string Book::toFileFormat() const {
   return title + "|" + author + "|" + isbn + "|" + "0" + "|" + borrowerId;
 }
 
+// Format for CSV storage
+string Book::toCSV() const {
+  if (isAvailable) {
+    return title + "," + author + "," + isbn + "," + "1" + ",";
+  }
+
+  return title + "," + author + "," + isbn + "," + "0" + "," + borrowerId;
+}
+
 // Parse from file format
 void Book::fromFileFormat(const string &line) {
   stringstream ss(line);

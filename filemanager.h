@@ -22,7 +22,9 @@ public:
     
     // Individual file operations
     bool saveBooksToFile(Library& library);
+    bool saveBooksToCSV(Library& library, string csvPath);
     bool saveUsersToFile(Library& library);
+    bool saveUsersToCSV(Library& library, string csvPath);
     bool loadBooksFromFile(Library& library);
     bool loadUsersFromFile(Library& library);
     
@@ -33,7 +35,6 @@ public:
     // Import/Export
     bool importBooksCSV(Library& library, string csvPath);
     bool importUsersCSV(Library& library, string csvPath);
-    bool exportCSV(Library& library);
     bool verifyBookConflict(Library &library, Book &book);
     bool verifyUserConflict(Library &library, User &user);
 };
