@@ -61,10 +61,10 @@ string Book::toString() const {
 // Format for file storage
 string Book::toFileFormat() const {
   if (isAvailable) {
-    return title + "|" + author + "|" + isbn + "|" + "0" + "|";
+    return title + "|" + author + "|" + isbn + "|" + "1" + "|";
   }
 
-  return title + "|" + author + "|" + isbn + "|" + "1" + "|" + borrowerId;
+  return title + "|" + author + "|" + isbn + "|" + "0" + "|" + borrowerId;
 }
 
 // Parse from file format
