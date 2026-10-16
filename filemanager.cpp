@@ -134,13 +134,37 @@ bool FileManager::importBooksCSV(Library &library, string csvPath) {
 
   string line;
   int count = 0;
+  int lineNumber = 0;
+
+  // Validate every book
   while (getline(file, line)) {
+    lineNumber++;
+
+    if (lineNumber == 1) {
+      // Skip the header of CSVs
+      continue;
+    }
+
     if (trim(line).empty())
       continue;
 
     Book book;
     book.fromCSV(line);
+
+    if (!verifyBookConflict(library, book)) {
+      cout << csvPath << ":" << "Ligne " << lineNumber << endl;
+      cout << "Import interrompu : " << count << " livre(s) chargé(s) avant l'erreur." << endl;
+      return false;
+    }
+
     library.addBook(book);
+
+    // Borrow book if imported book had a borrowerId
+    if (book.getBorrowerId() != "") {
+      User *user = library.findUserById(book.getBorrowerId());
+      user->borrowBook(book.getISBN());
+    }
+
     count++;
   }
 
@@ -151,3 +175,51 @@ bool FileManager::importBooksCSV(Library &library, string csvPath) {
 
 // Export CSV
 bool FileManager::exportCSV(Library &library) { return true; }
+
+bool FileManager::verifyBookConflict(Library &library, Book& book) {
+  string title = book.getTitle();
+  string author = book.getAuthor();
+  string isbn = book.getISBN();
+  bool isAvailable = book.getAvailability();
+  string borrowerId = book.getBorrowerId();
+
+  // Check for empty fields
+  if (title.empty() || author.empty() || isbn.empty()) {
+    cout << "\nErreur : Tous les champs sont requis. Veuillez réessayer." << endl;
+    return false;
+  }
+
+  // Check unique ISBN
+  if (library.findBookByISBN(isbn)) {
+    cout << "\nErreur : Un livre avec l'ISBN " << isbn << " existe déjà. " << endl;
+    return false;
+  }
+
+  // Check unique title + author
+  for (Book *b : library.searchBooksByTitle(title)) {
+    if (b->getAuthor() == author) {
+      cout << "\nErreur : Un livre de titre (" << title
+           << ") de l'auteur (" + author + ") existe déjà." << endl;
+      return false;
+    }
+  }
+
+  // Check for borrower ID + Availablity mismatch
+  if (isAvailable && borrowerId != "") {
+    cout << "\nErreur: Le livre '" << title << "' est marqué comme disponible alors qu'il est emprunté" << endl;
+    return false;
+  }
+
+  if (!isAvailable && borrowerId == "") {
+    cout << "\nErreur: Le livre '" << title << "' est marqué comme indisponbile alors qu'il n'est pas emprunté" << endl;
+    return false;
+  }
+
+  // Check for existing users
+  if (borrowerId != "" && library.findUserById(borrowerId) == NULL) {
+    cout << "\nErreur: L'utilisateur " << borrowerId << " n'existe pas" << endl;
+    return false;
+  }
+
+  return true;
+}

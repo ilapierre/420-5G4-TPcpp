@@ -112,38 +112,14 @@ int main(int argc, char* argv[]) {
                 string author = trim(getInput("Entrez l'auteur du livre : "));
                 string isbn = trim(getInput("Entrez l'ISBN du livre : "));
 
-                // Check for empty fields
-                if (title.empty() || author.empty() || isbn.empty()) {
-                  cout << "Erreur : Tous les champs sont requis. Veuillez réessayer.\n";
-                  pauseForInput();
-                  break;
-                }
-               
-                // Check unique ISBN
-                if (library.findBookByISBN(isbn)) {
-                  cout << "Erreur : Un livre avec l'ISBN " << isbn << " existe déjà.\n";
-                  pauseForInput();
-                  break;
-                }
-
-                // Check unique title + author
-                bool match = false;
-                for (Book *b : library.searchBooksByTitle(title)) {
-                  if (b->getAuthor() == author) {
-                    match = true;
-                    break;
-                  }
-                }
-
-                if (match) {
-                  cout << "Erreur : Un livre de titre ("
-                       << title
-                       << ") de l'auteur (" + author + ") existe déjà.\n";
-                  pauseForInput();
-                  break;
-                }
-
                 Book newBook(title, author, isbn);
+
+                if (!fileManager.verifyBookConflict(library, newBook)) {
+                  pauseForInput();
+                  cout << "Le Livre n'a pas pu être ajouté, veuillez réessayer. !\n";
+                  break;
+                };
+
                 library.addBook(newBook);
                 cout << "Livre ajouté avec succès !\n";
 
@@ -307,7 +283,10 @@ int main(int argc, char* argv[]) {
                 cout << "Attention : Extension .csv non-detectée.\n";
               }
 
-              if (choix == "1") fileManager.importBooksCSV(library, csvPath);
+              if (choix == "1") {
+                fileManager.importBooksCSV(library, csvPath);
+                fileManager.saveLibraryData(library);
+              }
               if (choix == "2") /*fileManager.importUsersCSV(library, csvPath)*/;
 
               pauseForInput();

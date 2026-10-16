@@ -33,6 +33,7 @@ public:
     // Import/Export
     bool importBooksCSV(Library& library, string csvPath);
     bool exportCSV(Library& library);
+    bool verifyBookConflict(Library &library, Book &book);
 };
 
 #endif

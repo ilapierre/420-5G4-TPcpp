@@ -1,5 +1,6 @@
 #include <sstream>
 #include <string>
+#include "utils.h"
 
 #include "book.h"
 
@@ -92,13 +93,19 @@ void Book::fromCSV(const string &line) {
   getline(ss, author, ',');
   getline(ss, isbn, ',');
 
+  title = trim(title);
+  author = trim(author);
+  isbn = trim(isbn);
+
   string available;
   getline(ss, available, ',');
+  available = trim(available);
 
   isAvailable = true;
   if (available == "0") {
     isAvailable = false;
   }
 
-  getline(ss, borrowerId, '|');
+  getline(ss, borrowerId, ',');
+  borrowerId = trim(borrowerId);
 }
