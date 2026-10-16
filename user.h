@@ -33,6 +33,7 @@ public:
     int getNumberOfBorrowedBooks() const;
     string toString() const;
     string toFileFormat() const;
+    string toCSV() const;
     void fromFileFormat(const string& line);
     void fromCSV(const string& line);
 };

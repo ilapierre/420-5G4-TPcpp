@@ -72,6 +72,16 @@ string User::toFileFormat() const {
     return result;
 }
 
+// Format for CSV storage
+string User::toCSV() const {
+    string result = name + "," + userId + ",";
+    for (size_t i = 0; i < borrowedBooks.size(); ++i) {
+        result += borrowedBooks[i];
+        if (i < borrowedBooks.size() - 1) result += ";";
+    }
+    return result;
+}
+
 // Parse from file format
 void User::fromFileFormat(const string& line) {
     stringstream ss(line);

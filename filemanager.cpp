@@ -40,6 +40,7 @@ bool FileManager::saveBooksToFile(Library& library) {
     return true;
 }
 
+// Save books to CSV file
 bool FileManager::saveBooksToCSV(Library& library, string csvDir) {
   // NOTE: Source pour la solution du timestamp:
   // https://www.w3schools.com/cpp/ref_ctime_strftime.asp
@@ -84,6 +85,40 @@ bool FileManager::saveUsersToFile(Library& library) {
     auto users = library.getAllUsers();
     for (User* user : users) {
         file << user->toFileFormat() << "\n";
+    }
+    
+    file.close();
+    return true;
+}
+
+// Save users to CSV file
+bool FileManager::saveUsersToCSV(Library& library, string csvDir) {
+  // NOTE: Source pour la solution du timestamp:
+  // https://www.w3schools.com/cpp/ref_ctime_strftime.asp
+
+    time_t timestamp;
+    char output[50];
+    struct tm * datetime;
+
+    time(&timestamp);
+    datetime = localtime(&timestamp);
+
+    strftime(output, 50, "%m_%d_%y", datetime);
+
+    string filename = csvDir + "/users_" + output + ".csv";
+
+    ofstream file(filename);
+    if (!file.is_open()) {
+      cout << "Erreur : Impossible d'ouvrir " << filename << " en écriture.\n";
+      return false;
+    }
+
+    // Header
+    file << "name," << "userId," << "borrowedBooks,\n";
+
+    auto users = library.getAllUsers();
+    for (User* user : users) {
+        file << user->toCSV() << "\n";
     }
     
     file.close();

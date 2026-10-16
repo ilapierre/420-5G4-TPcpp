@@ -311,7 +311,7 @@ int main(int argc, char* argv[]) {
               }
 
               fileManager.saveBooksToCSV(library, csvDir);
-              // fileManager.saveUsersToCSV(library, csvDir);
+              fileManager.saveUsersToCSV(library, csvDir);
               pauseForInput();
               break;
             }

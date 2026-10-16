@@ -22,9 +22,9 @@ public:
     
     // Individual file operations
     bool saveBooksToFile(Library& library);
-    bool saveBooksToCSV(Library& library, string csvPath);
+    bool saveBooksToCSV(Library& library, string csvDir);
     bool saveUsersToFile(Library& library);
-    bool saveUsersToCSV(Library& library, string csvPath);
+    bool saveUsersToCSV(Library& library, string csvDir);
     bool loadBooksFromFile(Library& library);
     bool loadUsersFromFile(Library& library);
     
