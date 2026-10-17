@@ -12,7 +12,20 @@ Lapierre, Ian
 
 ## Questions 
 ### Question 1: C++
-*TODO*
+> Expliquez en détails une fonctionnalité / notion dans le code que ne nous avons pas ou peu vu en cours. Montrez ici l’exemple sorti du code du projet.
+
+Le "logging" présent dans l'application présente une panoplie de notions du langage C++ n'ayant pas été consacré énormément de temps en cours. Notamment:
+- La manipulation du temps (`<ctime\`)
+- L'écriture dans un fichier (`ofstring`)
+- Les enums
+
+Tout d'abord, la première étape du processus de journalisation dans le programme est l'organisation de la date. Grâce à la librairie standard `<ctime>`, nous allons chercher la date actuelle sous forme de timestamp. Celle-ci est alors insérée lorsque nous ouvront le fichier de log avec l'outil de flux de sortie présent dans le cadre de `<sstream>`. Pour être capable de catégoriser les types de journaux, une énum `LogType` est déclarée. Elle contient l'ensemble des possibilités d'opérations nécessitant une journalisation. Le log est alors appellé de cette manière:
+```cpp
+    Logger logger("app.log");
+    logger.log(ADD_USER, name + "|" + userId); // ADD_USER = "AJOUT UTILISATEUR" dans l'enum
+```
+
+Dans cet exemple, Le flux de sortie pointe vers le fichier `app.log` où nous trouverons cette nouvelle entrée de journal.
 
 ### Question 2 : Options de développement possible
 *TODO*
