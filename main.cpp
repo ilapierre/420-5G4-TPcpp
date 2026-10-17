@@ -137,11 +137,10 @@ int main(int argc, char* argv[]) {
                 
                 if (library.removeBook(isbn)) {
                     cout << "Livre supprimé avec succès !\n";
+                    logger.log(REMOVE_BOOK, "Suppression du livre au ISBN " + isbn);
                 } else {
                     cout << "Livre non trouvé.\n";
                 }
-
-                logger.log(REMOVE_BOOK, "Suppression du livre au ISBN " + isbn);
 
                 pauseForInput();
                 break;
@@ -225,12 +224,11 @@ int main(int argc, char* argv[]) {
                 
                 if (library.checkOutBook(isbn, userId)) {
                     cout << "Livre emprunté avec succès !\n";
+                    // TODO: Ajouter les détails du livre
+                    logger.log(CHECKOUT_BOOK, "Emprunt du livre au ISBN " + isbn);
                 } else {
                     cout << "Erreur : Impossible d'emprunter le livre. Vérifiez l'ISBN, l'ID utilisateur et la disponibilité du livre.\n";
                 }
-
-                // TODO: Ajouter les détails du livre
-                logger.log(CHECKOUT_BOOK, "Emprunt du livre au ISBN " + isbn);
 
                 pauseForInput();
                 break;
@@ -241,11 +239,10 @@ int main(int argc, char* argv[]) {
                 
                 if (library.returnBook(isbn)) {
                     cout << "Livre retourné avec succès !\n";
+                    logger.log(RETURN_BOOK, "Retour du livre au ISBN " + isbn);
                 } else {
                     cout << "Erreur : Impossible de retourner le livre. Vérifiez l'ISBN et que le livre est bien emprunté.\n";
                 }
-
-                logger.log(RETURN_BOOK, "Retour du livre au ISBN " + isbn);
 
                 pauseForInput();
                 break;
@@ -311,15 +308,17 @@ int main(int argc, char* argv[]) {
 
               if (choix == "1") {
                 int count = fileManager.importBooksCSV(library, csvPath);
-                fileManager.saveLibraryData(library);
-
-                logger.log(IMPORT_BOOKS, "Import CSV de " + to_string(count) + " livres");
+                if (count > 0) {
+                  fileManager.saveLibraryData(library);
+                  logger.log(IMPORT_BOOKS, "Import CSV de " + to_string(count) + " livres");
+                }
               }
               if (choix == "2") {
                 int count = fileManager.importUsersCSV(library, csvPath);
-                fileManager.saveLibraryData(library);
-
-                logger.log(IMPORT_USERS, "Import CSV de " + to_string(count) + " utilisateurs");
+                if (count > 0) {
+                  fileManager.saveLibraryData(library);
+                  logger.log(IMPORT_USERS, "Import CSV de " + to_string(count) + " utilisateurs");
+                }
               }
 
 
@@ -337,11 +336,13 @@ int main(int argc, char* argv[]) {
                 break;
               }
 
-              fileManager.saveBooksToCSV(library, csvDir);
-              logger.log(EXPORT_BOOKS, "Export en CSV des livres");
+              if (fileManager.saveBooksToCSV(library, csvDir)) {
+                logger.log(EXPORT_BOOKS, "Export en CSV des livres");
+              }
 
-              fileManager.saveUsersToCSV(library, csvDir);
-              logger.log(EXPORT_USERS, "Export en CSV des utilisateurs");
+              if (fileManager.saveUsersToCSV(library, csvDir)) {
+                logger.log(EXPORT_USERS, "Export en CSV des utilisateurs");
+              }
 
               pauseForInput();
               break;
