@@ -30,11 +30,8 @@ void Logger::log(LogType type, const string &message) {
 
   // Create log entry
   ostringstream logEntry;
-  logEntry << "[" << timestamp << "] " << typeToString(type) << ": "
-           << message << endl;
-
-  // Output to console
-  cout << logEntry.str();
+  logEntry << timestamp << " - [" << typeToString(type) << "] " << message
+           << endl;
 
   // Output to log file
   if (logFile.is_open()) {
@@ -57,6 +54,10 @@ string Logger::typeToString(LogType type) const {
       return "IMPORT UTILISATEURS";
     case IMPORT_BOOKS:
       return "IMPORT LIVRES";
+    case EXPORT_USERS:
+      return "EXPORT UTILISATEURS";
+    case EXPORT_BOOKS:
+      return "EXPORT LIVRES";
     // Library
     case ADD_BOOK:
       return "AJOUT LIVRE";

@@ -33,8 +33,8 @@ public:
     void createBackup();
 
     // Import/Export
-    bool importBooksCSV(Library& library, string csvPath);
-    bool importUsersCSV(Library& library, string csvPath);
+    int importBooksCSV(Library& library, string csvPath);
+    int importUsersCSV(Library& library, string csvPath);
     bool verifyBookConflict(Library &library, Book &book);
     bool verifyUserConflict(Library &library, User &user);
 };

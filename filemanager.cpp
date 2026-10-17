@@ -193,7 +193,7 @@ void FileManager::createBackup() {
 }
 
 // Import Books by CSV
-bool FileManager::importBooksCSV(Library &library, string csvPath) {
+int FileManager::importBooksCSV(Library &library, string csvPath) {
   ifstream file(csvPath);
 
   if (!file.is_open()) {
@@ -239,11 +239,11 @@ bool FileManager::importBooksCSV(Library &library, string csvPath) {
 
   file.close();
   cout << "Chargé " << count << " livre(s) depuis le fichier.\n";
-  return true;
+  return count;
 }
 
 // Import Users by CSV
-bool FileManager::importUsersCSV(Library &library, string csvPath) {
+int FileManager::importUsersCSV(Library &library, string csvPath) {
   ifstream file(csvPath);
 
   if (!file.is_open()) {
@@ -289,7 +289,7 @@ bool FileManager::importUsersCSV(Library &library, string csvPath) {
 
   file.close();
   cout << "Chargé " << count << " utilisateur(s) depuis le fichier.\n";
-  return true;
+  return count;
 }
 
 bool FileManager::verifyBookConflict(Library &library, Book& book) {

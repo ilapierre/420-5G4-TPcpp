@@ -14,6 +14,8 @@ enum LogType {
   BACKUP_LIBRARY,
   IMPORT_USERS,
   IMPORT_BOOKS,
+  EXPORT_USERS,
+  EXPORT_BOOKS,
   // Library
   ADD_BOOK,
   ADD_USER,

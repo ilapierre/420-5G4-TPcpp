@@ -6,6 +6,7 @@
 
 #include "filemanager.h"
 #include "library.h"
+#include "logger.h"
 #include "utils.h"
 
 using namespace std;
@@ -84,6 +85,8 @@ int main(int argc, char* argv[]) {
         usersFile = (filesystem::path(dataDir) / "users.txt").string();
     }
 
+    Logger logger("app.log");
+
     Library library;
     FileManager fileManager(booksFile, usersFile);
     
@@ -123,6 +126,8 @@ int main(int argc, char* argv[]) {
                 library.addBook(newBook);
                 cout << "Livre ajouté avec succès !\n";
 
+                logger.log(ADD_BOOK, title + "|" + author + "|" + isbn + "|1");
+
                 pauseForInput();
                 break;
             }
@@ -135,6 +140,9 @@ int main(int argc, char* argv[]) {
                 } else {
                     cout << "Livre non trouvé.\n";
                 }
+
+                logger.log(REMOVE_BOOK, "Suppression du livre au ISBN " + isbn);
+
                 pauseForInput();
                 break;
             }
@@ -200,6 +208,8 @@ int main(int argc, char* argv[]) {
                 library.addUser(newUser);
                 cout << "Utilisateur ajouté avec succès !\n";
 
+                logger.log(ADD_USER, name + "|" + userId);
+
                 pauseForInput();
                 break;
             }
@@ -218,6 +228,10 @@ int main(int argc, char* argv[]) {
                 } else {
                     cout << "Erreur : Impossible d'emprunter le livre. Vérifiez l'ISBN, l'ID utilisateur et la disponibilité du livre.\n";
                 }
+
+                // TODO: Ajouter les détails du livre
+                logger.log(CHECKOUT_BOOK, "Emprunt du livre au ISBN " + isbn);
+
                 pauseForInput();
                 break;
             }
@@ -230,6 +244,9 @@ int main(int argc, char* argv[]) {
                 } else {
                     cout << "Erreur : Impossible de retourner le livre. Vérifiez l'ISBN et que le livre est bien emprunté.\n";
                 }
+
+                logger.log(RETURN_BOOK, "Retour du livre au ISBN " + isbn);
+
                 pauseForInput();
                 break;
             }
@@ -250,6 +267,9 @@ int main(int argc, char* argv[]) {
                 } else {
                     cout << "Erreur lors de la sauvegarde des données de la bibliothèque.\n";
                 }
+
+                logger.log(SAVE_LIBRARY, "Sauvegarde de la bibliothèque");
+
                 pauseForInput();
                 break;
             }
@@ -257,6 +277,9 @@ int main(int argc, char* argv[]) {
             case 13: { // Create Backup
                 fileManager.createBackup();
                 pauseForInput();
+
+                logger.log(BACKUP_LIBRARY, "Backup de la bibliothèque");
+
                 break;
             }
             
@@ -288,13 +311,18 @@ int main(int argc, char* argv[]) {
               }
 
               if (choix == "1") {
-                fileManager.importBooksCSV(library, csvPath);
+                int count = fileManager.importBooksCSV(library, csvPath);
                 fileManager.saveLibraryData(library);
+
+                logger.log(IMPORT_BOOKS, "Import CSV de " + to_string(count) + " livres");
               }
               if (choix == "2") {
-                fileManager.importUsersCSV(library, csvPath);
+                int count = fileManager.importUsersCSV(library, csvPath);
                 fileManager.saveLibraryData(library);
+
+                logger.log(IMPORT_USERS, "Import CSV de " + to_string(count) + " utilisateurs");
               }
+
 
               pauseForInput();
               break;
@@ -311,7 +339,11 @@ int main(int argc, char* argv[]) {
               }
 
               fileManager.saveBooksToCSV(library, csvDir);
+              logger.log(EXPORT_BOOKS, "Export en CSV des livres");
+
               fileManager.saveUsersToCSV(library, csvDir);
+              logger.log(EXPORT_USERS, "Export en CSV des utilisateurs");
+
               pauseForInput();
               break;
             }
@@ -319,6 +351,8 @@ int main(int argc, char* argv[]) {
             case 0: // Exit
                 cout << "Sauvegarde des données avant la fermeture...\n";
                 fileManager.saveLibraryData(library);
+                logger.log(SAVE_LIBRARY, "Sauvegarde de la bibliothèque");
+
                 cout << "Merci d'avoir utilisé le Système de Gestion de Bibliothèque Personnelle !\n";
                 running = false;
                 break;
