@@ -264,11 +264,10 @@ int main(int argc, char* argv[]) {
             case 12: { // Save Data
                 if (fileManager.saveLibraryData(library)) {
                     cout << "Données de la bibliothèque sauvegardées avec succès !\n";
+                    logger.log(SAVE_LIBRARY, "Sauvegarde de la bibliothèque");
                 } else {
                     cout << "Erreur lors de la sauvegarde des données de la bibliothèque.\n";
                 }
-
-                logger.log(SAVE_LIBRARY, "Sauvegarde de la bibliothèque");
 
                 pauseForInput();
                 break;
@@ -350,8 +349,9 @@ int main(int argc, char* argv[]) {
             
             case 0: // Exit
                 cout << "Sauvegarde des données avant la fermeture...\n";
-                fileManager.saveLibraryData(library);
-                logger.log(SAVE_LIBRARY, "Sauvegarde de la bibliothèque");
+                if (fileManager.saveLibraryData(library)) {
+                    logger.log(SAVE_LIBRARY, "Sauvegarde de la bibliothèque");
+                }
 
                 cout << "Merci d'avoir utilisé le Système de Gestion de Bibliothèque Personnelle !\n";
                 running = false;

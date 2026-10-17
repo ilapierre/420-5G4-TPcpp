@@ -7,8 +7,8 @@ Lapierre, Ian
 ## Fonctionnalités implémentées
 - [x] **Interface et Expérience Utilisateur:** Détection des doublons plus intelligente (même titre, auteur, ISBN).
 - [x] **Gestion des Données:** Import/Export CSV pour faciliter la gestion en lot (en plus du format actuel).
-- [] **Journal d'activités:** Fichier de journal de l'application conservé au fur et à mesure des sessions.
-- [] **Correction d'un bug:** Ne pas sauvegarder automatiquement à la sortie si --data-dir est absent.
+- [x] **Journal d'activités:** Fichier de journal de l'application conservé au fur et à mesure des sessions.
+- [x] **Correction d'un bug:** Ne pas sauvegarder automatiquement à la sortie si --data-dir est absent.
 
 ## Questions 
 ### Question 1: C++
