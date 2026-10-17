@@ -75,6 +75,7 @@ bool FileManager::saveBooksToCSV(Library& library, string csvDir) {
     }
     
     file.close();
+    cout << "Exporté " << books.size() << " livre(s) vers " << filename << ".\n";
     return true;
 }
 
@@ -126,6 +127,7 @@ bool FileManager::saveUsersToCSV(Library& library, string csvDir) {
     }
     
     file.close();
+    cout << "Exporté " << users.size() << " utilisateur(s) vers " << filename << ".\n";
     return true;
 }
 
